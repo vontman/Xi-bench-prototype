@@ -5,7 +5,6 @@ authors = ["vontman <vontman@gmail.com>"]
 
 [dev-dependencies]
 criterion = "0.2"
-gnuplot = "0.0.30"
 
 [[bench]]
 name = "criterion_benchmark"
