@@ -6,7 +6,6 @@ matrix:
 
 script:
   - cargo build --verbose --all
-  - cargo bench --verbose --all
 
 after_success:
   - ./after-success.sh
