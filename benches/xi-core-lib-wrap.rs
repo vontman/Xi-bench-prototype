@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![feature(test)]
+#[macro_use]
 
-extern crate test;
+extern crate criterion;
 extern crate xi_core_lib as xi_core;
 extern crate xi_rope;
 
 use crate::xi_core::tabs::BufferId;
 use crate::xi_core::view::View;
-use test::Bencher;
+use criterion::Criterion;
 use xi_rope::Rope;
 
 fn build_short_lines(n: usize) -> String {
@@ -33,54 +33,62 @@ fn build_short_lines(n: usize) -> String {
     s
 }
 
-#[bench]
-fn line_of_offset_no_breaks(b: &mut Bencher) {
-    let text = Rope::from(build_short_lines(10_000));
-    let view = View::new(1.into(), BufferId::new(2));
+fn line_of_offset_no_breaks(c: &mut Criterion) {
+    c.bench_function("line_of_offset_no_breaks 20", |b| {
+        let text = Rope::from(build_short_lines(10_000));
+        let view = View::new(1.into(), BufferId::new(2));
 
-    let total_bytes = text.len();
-    b.iter(|| {
-        for i in 0..total_bytes {
-            let _line = view.line_of_offset(&text, i);
-        }
-    })
+        let total_bytes = text.len();
+        b.iter(|| {
+            for i in 0..total_bytes {
+                let _line = view.line_of_offset(&text, i);
+            }
+        })
+    });
 }
 
-#[bench]
-fn line_of_offset_col_breaks(b: &mut Bencher) {
-    let text = Rope::from(build_short_lines(10_000));
-    let mut view = View::new(1.into(), BufferId::new(2));
-    view.debug_force_rewrap_cols(&text, 20);
+fn line_of_offset_col_breaks(c: &mut Criterion) {
+    c.bench_function("line_of_offset_col_breaks 20", |b| {
+        b.iter(|| {
+            let text = Rope::from(build_short_lines(10_000));
+            let mut view = View::new(1.into(), BufferId::new(2));
+            view.debug_force_rewrap_cols(&text, 20);
 
-    let total_bytes = text.len();
-    b.iter(|| {
-        for i in 0..total_bytes {
-            let _line = view.line_of_offset(&text, i);
-        }
-    })
+            let total_bytes = text.len();
+
+            for i in 0..total_bytes {
+                let _line = view.line_of_offset(&text, i);
+            }
+        })
+    });
 }
 
-#[bench]
-fn offset_of_line_no_breaks(b: &mut Bencher) {
-    let text = Rope::from(build_short_lines(10_000));
-    let view = View::new(1.into(), BufferId::new(2));
+fn offset_of_line_no_breaks(c: &mut Criterion) {
+    c.bench_function("offset_of_line_no_breaks 20", |b| {
+        b.iter(|| {
+            let text = Rope::from(build_short_lines(10_000));
+            let view = View::new(1.into(), BufferId::new(2));
 
-    b.iter(|| {
-        for i in 0..10_000 {
-            let _line = view.offset_of_line(&text, i);
-        }
-    })
+            for i in 0..10_000 {
+                let _line = view.offset_of_line(&text, i);
+            }
+        })
+    });
 }
 
-#[bench]
-fn offset_of_line_col_breaks(b: &mut Bencher) {
-    let text = Rope::from(build_short_lines(10_000));
-    let mut view = View::new(1.into(), BufferId::new(2));
-    view.debug_force_rewrap_cols(&text, 20);
+fn offset_of_line_col_breaks(c: &mut Criterion) {
+    c.bench_function("offset_of_line_col_breaks 20", |b| {
+        b.iter(|| {
+            let text = Rope::from(build_short_lines(10_000));
+            let mut view = View::new(1.into(), BufferId::new(2));
+            view.debug_force_rewrap_cols(&text, 20);
 
-    b.iter(|| {
-        for i in 0..10_000 {
-            let _line = view.offset_of_line(&text, i);
-        }
-    })
+            for i in 0..10_000 {
+                let _line = view.offset_of_line(&text, i);
+            }
+        })
+    });
 }
+
+criterion_group!(micro_benches, line_of_offset_no_breaks, line_of_offset_col_breaks, offset_of_line_no_breaks, offset_of_line_col_breaks);
+criterion_main!(micro_benches);

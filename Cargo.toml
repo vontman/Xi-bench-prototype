@@ -12,6 +12,7 @@ harness = false
 
 [[bench]]
 name = "xi-core-lib-wrap"
+harness = false
 
 [dependencies]
 
