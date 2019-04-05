@@ -1,0 +1,30 @@
+[package]
+name = "xi-bench"
+version = "0.1.0"
+authors = ["vontman <vontman@gmail.com>"]
+
+[dev-dependencies]
+criterion = "0.2"
+
+[[bench]]
+name = "criterion_benchmark"
+harness = false
+
+[[bench]]
+name = "xi-core-lib-wrap"
+
+[dependencies]
+
+[dependencies.xi-core-lib]
+git = "https://github.com/xi-editor/xi-editor.git"
+branch = "master"
+
+[dependencies.xi-rpc]
+git = "https://github.com/xi-editor/xi-editor.git"
+branch = "master"
+version="0.2.0"
+
+[dependencies.xi-rope]
+git = "https://github.com/xi-editor/xi-editor.git"
+branch = "master"
+version="0.3"
