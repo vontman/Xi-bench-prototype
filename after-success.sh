@@ -8,11 +8,11 @@ cd  "${TRAVIS_REPO_SLUG}-bench" && \
 
 # Bench master
 git checkout master && \
-cargo bench -- --save-baseline before && \
+cargo bench -- --bench xi-core-lib-wrap --save-baseline before && \
 
 # Bench current branch
 git checkout ${TRAVIS_COMMIT} && \
-cargo bench -- --save-baseline after && \
+cargo bench -- --bench xi-core-lib-wrap --save-baseline after && \
 
 cargo install critcmp --force && \
 
