@@ -3,9 +3,6 @@ name = "xi-bench"
 version = "0.1.0"
 authors = ["vontman <vontman@gmail.com>"]
 
-[lib]
-bench = false
-
 [dev-dependencies]
 criterion = "0.2"
 
